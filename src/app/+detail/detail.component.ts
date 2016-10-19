@@ -4,6 +4,8 @@ import { Component } from '@angular/core';
   selector: 'detail',
   template: `
     <h1>Hello from Detail</h1>
+    <p>Here is an example of how to do child routing (not to be confused with child trafficking).</p>
+    <a [routerLink]="['./det1']">det1</a> | <a [routerLink]="['./det2']">det2</a>
     <router-outlet></router-outlet>
   `
 })
