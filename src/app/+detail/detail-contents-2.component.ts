@@ -1,14 +1,25 @@
 import { Component } from '@angular/core';
+import { JobManagerService, IJob } from '../services';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'detail-contents-2',
   template: `
-    <h2>Detail contents 2.</h2>
+    <pre>{{job$ | async | json}}</pre>
   `
 })
 export class DetailContents2Component {
-  constructor() {
-
+  public job$: Observable<IJob>;
+  constructor(private _jobManagerService: JobManagerService) {
+    if (_jobManagerService) {
+      console.log('Job manager service injected.');
+      this.job$ = _jobManagerService.activeJob$;
+      _jobManagerService.activeJobId = 1;
+      setTimeout(() => {
+        this._jobManagerService.activeJobId = 2;
+      }, 15000);
+      // this.job$ = jobManagerService.streamJob(1);
+    }
   }
 
   ngOnInit() {
