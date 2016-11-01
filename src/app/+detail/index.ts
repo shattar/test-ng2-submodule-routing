@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
+import { MdProgressCircleModule } from '@angular/material';
+
 import { DetailComponent } from './detail.component';
 import { DetailContents1Component } from './detail-contents-1.component';
 import { DetailContents2Component } from './detail-contents-2.component';
@@ -29,6 +31,7 @@ export const routes = [
   imports: [
     CommonModule,
     FormsModule,
+    MdProgressCircleModule,
     RouterModule.forChild(routes),
   ]
 })

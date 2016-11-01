@@ -16,69 +16,7 @@ import 'rxjs/add/operator/switch';
 import 'rxjs/add/operator/multicast';
 import 'rxjs/add/operator/do';
 
-export interface IJobInstructions {
-    description?: string;
-    truck_id?: number;
-    truck_code?: string;
-    truck_name?: string;
-    material_id?: number;
-    material_code?: string;
-    material_name?: string;
-    target_material_weight?: number;
-}
-
-export interface IJobResults {
-    loader_id?: number;
-    loader_code?: string;
-    loader_pass_count?: number;
-    loader_material_weight?: number;
-    first_scale_id?: number;
-    first_scale_code?: string;
-    first_scale_gvw?: number;
-    first_scale_time?: string;
-    scale_id?: number;
-    scale_code?: string;
-    scale_gvw?: number;
-    scale_time?: string;
-    ticket_number?: string;
-}
-
-export interface IJob {
-    id: number;
-    rework_job_id?: number;
-    state?: string;
-    type?: string;
-    ready_time?: string;
-    start_doing_time?: string;
-    stop_doing_time?: string;
-    start_check_out_time?: string;
-    done_time?: string;
-    done_reason?: string;
-    zone_id?: number;
-    zone_code?: string;
-    zone_name?: string;
-    site_id?: number;
-    instructions?: IJobInstructions;
-    results?: IJobResults;
-}
-
-// class ActiveJob extends BehaviorSubject<IJob> {
-//     private _jobStreamSubscription: Subscription;
-
-//     constructor() {
-//         super({id: null});
-//     }
-
-//     set jobStream(jobStream: Observable<IJob>) {
-//         if (this._jobStreamSubscription) {
-//             this._jobStreamSubscription.unsubscribe();
-//         }
-
-//         if (jobStream) {
-//             this._jobStreamSubscription = jobStream.subscribe(this);
-//         }
-//     }
-// }
+import { IJob } from './loader-dispatch.service';
 
 @Injectable()
 export class JobManagerService {

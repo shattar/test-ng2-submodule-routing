@@ -5,6 +5,8 @@ import { Component, ViewEncapsulation } from '@angular/core';
 
 import { AppState } from './app.service';
 
+import * as mdTheme from '@angular/material/core/theming/prebuilt/indigo-pink.css';
+
 /*
  * App Component
  * Top Level Component
@@ -13,6 +15,7 @@ import { AppState } from './app.service';
   selector: 'app',
   encapsulation: ViewEncapsulation.None,
   styleUrls: [
+    mdTheme,
     './app.component.css'
   ],
   template: `

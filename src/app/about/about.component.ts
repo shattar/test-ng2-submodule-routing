@@ -14,6 +14,7 @@ console.log('`About` component loaded asynchronously');
   `],
   template: `
     <h1>About</h1>
+    <md-spinner></md-spinner>
     <div>
       For hot module reloading run
       <pre>npm run start:hmr</pre>
