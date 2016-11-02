@@ -15,6 +15,7 @@ import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/switch';
 import 'rxjs/add/operator/multicast';
 import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/catch';
 
 export interface IJobInstructions {
     description?: string;
@@ -74,11 +75,11 @@ export class LoaderDispatchService {
     constructor(private _http: Http) {
     }
 
-    pollIt(observable: Observable<any>): Observable<any> {
-        return observable
+    streamZoneJobs(zoneId: number): Observable<IJobs> {
+        return this.getZoneJobs(zoneId)
             .repeatWhen(completed => {
-                return completed.delay(10000).do(val => { console.log('Repeat Reqeust.') });
-            })
+                return completed.delay(10000);
+            });
     }
 
     getZoneJobs(zoneId: number, maxRetries?: number): Observable<IJobs> {
@@ -100,8 +101,12 @@ export class LoaderDispatchService {
                 }
             })
             .map(res => {
-                console.log('Received Response.');
+                // console.log('Received Response.');
                 return <IJobs>res.json();
+            })
+            .catch((err, caught) => {
+                // console.log('Received Error.', err);
+                return Observable.of(null)
             });
     }
 }

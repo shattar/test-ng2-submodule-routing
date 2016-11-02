@@ -12,14 +12,27 @@ import '@angular/core';
 import '@angular/common';
 import '@angular/forms';
 import '@angular/http';
+import '@angular/material';
 import '@angular/router';
 
 // AngularClass
 import '@angularclass/hmr';
 
 // RxJS
+import 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/retryWhen';
+import 'rxjs/add/operator/repeatWhen';
+import 'rxjs/add/operator/timeout';
+import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/scan';
+import 'rxjs/add/operator/switch';
+import 'rxjs/add/operator/multicast';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/concat';
 
 if ('production' === ENV) {
   // Production

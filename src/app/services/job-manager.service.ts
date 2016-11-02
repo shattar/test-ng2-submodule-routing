@@ -15,6 +15,8 @@ import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/switch';
 import 'rxjs/add/operator/multicast';
 import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/concat';
 
 import { IJob } from './loader-dispatch.service';
 
@@ -53,15 +55,22 @@ export class JobManagerService {
         return this._activeJobSubject$;
     }
 
+    get activeJobId(): number {
+        return this._activeJobId;
+    }
+
     set activeJobId(jobId: number | null) {
         if (jobId == null) {
             if (this._activeJobId != null) {
                 // Stop the current observable
-                this._activeJobStream$ = NeverObservable.create<IJob>();
+                // this._activeJobStream$ = Observable.create(sub => {
+                //     sub.next(null);
+                // });
+                this._activeJobStream$ = Observable.of(null);
                 this._activeJobId = null;
             }
         } else if (jobId !== this._activeJobId) {
-            this._activeJobStream$ = this.streamJob(jobId);
+            this._activeJobStream$ = Observable.of(null).concat(this.streamJob(jobId));
             this._activeJobId = jobId;
         }
 
@@ -96,8 +105,12 @@ export class JobManagerService {
                 }
             })
             .map(res => {
-                console.log('Received Response.');
+                // console.log('Received Response.', res);
                 return <IJob>res.json();
+            })
+            .catch((err, caught) => {
+                // console.log('Received Error.', err);
+                return Observable.of(null)
             });
     }
 }

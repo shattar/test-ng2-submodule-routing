@@ -19,13 +19,14 @@ import { HomeComponent } from './home';
 import { AboutComponent } from './about';
 import { NoContentComponent } from './no-content';
 import { XLarge } from './home/x-large';
-import { JobManagerService } from './services';
+import { JobManagerService, LoaderDispatchService } from './services';
 
 // Application wide providers
 const APP_PROVIDERS = [
   ...APP_RESOLVER_PROVIDERS,
   AppState,
-  JobManagerService
+  JobManagerService,
+  LoaderDispatchService
 ];
 
 type StoreType = {
