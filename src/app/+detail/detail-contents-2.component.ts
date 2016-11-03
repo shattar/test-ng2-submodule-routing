@@ -19,6 +19,7 @@ import { Subscription } from 'rxjs/Subscription';
           <md-input #jobId name="jobId" placeholder="Job Id" (keyup.enter)="jobIdInput(jobId.value)" (blur)="jobIdInput(jobId.value)">
             <md-hint align="end" *ngIf="_jobIdInvalid">Must be an integer!</md-hint>
           </md-input>
+          <pre>{{job$ | async | json}}</pre>
         </md-card-content>
       </md-card>
       <station-view [stationId]="1"></station-view>
@@ -36,7 +37,6 @@ export class DetailContents2Component {
       this.job$ = _jobManagerService.activeJob$;
     }
           // <p>{{jobId.value}}</p>
-          // <pre>{{job$ | async | json}}</pre>
 
   }
 

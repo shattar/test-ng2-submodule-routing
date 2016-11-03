@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
+import * as ngDataTableStyles from 'angular2-data-table/release/datatable.css';
+import * as ngDataTableMaterialStyles from 'angular2-data-table/release/material.css';
 
 @Component({
   selector: 'detail',
-  styles: [`
-  `],
+  encapsulation: ViewEncapsulation.None,
+  styleUrls: [
+    ngDataTableStyles,
+    ngDataTableMaterialStyles
+  ],
   template: `
     <md-toolbar color="primary">
       <span>Loader Dispatchy Views</span>

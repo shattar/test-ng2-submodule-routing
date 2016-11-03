@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { MdProgressCircleModule, MdCardModule, MdInputModule, MdSidenavModule, MdListModule, MdToolbarModule } from '@angular/material';
+import { Angular2DataTableModule } from 'angular2-data-table';
 
 import { DetailComponent } from './detail.component';
 import { DetailContents1Component } from './detail-contents-1.component';
@@ -40,6 +41,7 @@ export const routes = [
     MdSidenavModule,
     MdListModule,
     MdToolbarModule,
+    Angular2DataTableModule,
     RouterModule.forChild(routes),
   ]
 })
