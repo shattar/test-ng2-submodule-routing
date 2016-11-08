@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs/Subscription';
     }
   `],
   template: `
+      <job-form></job-form>
       <md-card>
         <md-card-subtitle>Active Job</md-card-subtitle>
         <md-card-title>Job #{{jobId.value}}</md-card-title>
@@ -29,7 +30,6 @@ export class DetailContents2Component {
   public job$: Observable<IJob>;
   private _jobIdInvalid: boolean = true;
   private _parameterSubscription: Subscription;
-
   constructor(private _jobManagerService: JobManagerService,
               private _route: ActivatedRoute) {
     if (_jobManagerService) {

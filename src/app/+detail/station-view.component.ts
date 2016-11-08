@@ -12,12 +12,12 @@ import { Subscription } from 'rxjs/Subscription';
                 <datatable 
                     class="material"
                     [rows]="jobs"
-                    [columnMode]="'force'"
-                    [headerHeight]="50"
-                    [footerHeight]="50"
-                    [rowHeight]="'auto'">
-                    <datatable-column name="Id" [width]="50"></datatable-column>
-                    <datatable-column name="State" [width]="100"></datatable-column>
+                    columnMode="'force'"
+                    headerHeight="50"
+                    footerHeight="50"
+                    rowHeight="'auto'">
+                    <datatable-column name="Id" width="50"></datatable-column>
+                    <datatable-column name="State" width="100"></datatable-column>
                     <datatable-column name="Loader Id" prop="results.loader_id"></datatable-column>
                     <datatable-column name="Truck Id" prop="instructions.truck_id"></datatable-column>
                     <datatable-column name="Material Id" prop="instructions.material_id"></datatable-column>
@@ -58,20 +58,6 @@ export class StationViewComponent {
     zoneJobsSubscription: Subscription;
     jobs: IJob[] = [];
 
-                    // <datatable-column name="Age" prop="ready_time">
-                    //     <template let-time="value">
-                    //     {{time}}
-                    //     </template>
-                    // </datatable-column>
-
-
-    //                 [columns]="columns"
-    // columns = [
-    //     { name: 'Id' },
-    //     { name: 'State' },
-    //     { name: 'Truck Id', prop: 'state'}
-    // ];
-
     @Input() set stationId(stationId: number) {
         if (this._stationId !== stationId) {
             if (this.zoneJobsSubscription) {
@@ -99,27 +85,6 @@ export class StationViewComponent {
     ngOnInit() {
         console.log('hello `station-view` component');
     }
-
-    // ngOnChanges(changes: SimpleChanges) {
-    //     if ('stationId' in changes) {
-    //         let change = changes['stationId'];
-    //         if (this.zoneJobsSubscription) {
-    //             this.zoneJobsSubscription.unsubscribe();
-    //         }
-
-    //         this.zoneJobsSubscription = this.loaderDispatchService.streamZoneJobs(change.currentValue)
-    //             // .subscribeOn(async)
-    //             .subscribe(
-    //                 (jobs: IJobs) => {
-    //                     if (jobs) {
-    //                         this.jobs = jobs.jobs;
-    //                     } else {
-    //                         this.jobs = [];
-    //                     }
-    //                 }
-    //             );
-    //     }
-    // }
 
     ngOnDestroy() {
         if (this.zoneJobsSubscription) {
