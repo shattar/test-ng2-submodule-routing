@@ -23,13 +23,11 @@ import { Subscription } from 'rxjs/Subscription';
                     <datatable-column name="Material Id" prop="instructions.material_id"></datatable-column>
                     <datatable-column name="Target Weight" prop="instructions.target_material_weight">
                         <template let-weight="value">
-                        {{weight | number:1.0-1}}
+                            <template [ngIf]="weight != null && weight !== ''">{{weight | number:1.0-1}}</template>
                         </template>
                     </datatable-column>
                     <datatable-column name="Age" prop="ready_time">
-                        <template let-time="value">
-                        {{deltaMinutes(time)}}
-                        </template>
+                        <template let-time="value">{{deltaMinutes(time)}}</template>
                     </datatable-column>
                 </datatable>
             </md-card-content>

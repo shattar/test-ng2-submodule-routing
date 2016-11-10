@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers, RequestOptions, ResponseContentType } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import { NeverObservable } from 'rxjs/observable/NeverObservable';
@@ -36,24 +36,24 @@ export interface IJobResults {
     first_scale_id?: number;
     first_scale_code?: string;
     first_scale_gvw?: number;
-    first_scale_time?: string;
+    first_scale_time?: string | Date;
     scale_id?: number;
     scale_code?: string;
     scale_gvw?: number;
-    scale_time?: string;
+    scale_time?: string | Date;
     ticket_number?: string;
 }
 
 export interface IJob {
-    id: number;
+    id?: number;
     rework_job_id?: number;
     state?: string;
     type?: string;
-    ready_time?: string;
-    start_doing_time?: string;
-    stop_doing_time?: string;
-    start_check_out_time?: string;
-    done_time?: string;
+    ready_time?: string | Date;
+    start_doing_time?: string | Date;
+    stop_doing_time?: string | Date;
+    start_check_out_time?: string | Date;
+    done_time?: string | Date;
     done_reason?: string;
     zone_id?: number;
     zone_code?: string;
@@ -101,12 +101,57 @@ export class LoaderDispatchService {
                 }
             })
             .map(res => {
-                // console.log('Received Response.');
-                return <IJobs>res.json();
+                try {
+                    return <IJobs>(res.json());
+                } catch (error) {
+                    // If we got an empty response.
+                    return null;
+                }
+            });
+    }
+
+    createJob(job: IJob, siteId?: number, maxRetries?: number): Observable<IJob> {
+        let url: string = this._baseUrl + 'job';
+
+        if (siteId != null) {
+            job.site_id = siteId;
+        }
+
+        let headers = new Headers({
+            'Content-Type': 'application/json'
+        });
+
+        let options = new RequestOptions({
+            headers: headers,
+            responseType: ResponseContentType.Json
+        });
+
+        return this._http.put(url, JSON.stringify(job), options)
+            .timeout(5000, new Error('HTTP PUT Timeout: ' + url))
+            .retryWhen(error => {
+                // error is an Observable sequence of errors.
+                // We want to return an Observable sequence of the same errors, delayed
+                if (maxRetries == null) {
+                    // Don't retry, just map it back to an error.
+                    return error.map(err => {
+                        throw err;
+                    })
+                } else {
+                    return error.delay(5000).scan((errorCount, err) => {
+                        if (errorCount >= maxRetries) {
+                            throw err;
+                        }
+                        return errorCount + 1;
+                    }, 0);
+                }
             })
-            .catch((err, caught) => {
-                // console.log('Received Error.', err);
-                return Observable.of(null)
+            .map(res => {
+                try {
+                    return <IJob>(res.json());
+                } catch (error) {
+                    // If we got an empty response.
+                    return null;
+                }
             });
     }
 }

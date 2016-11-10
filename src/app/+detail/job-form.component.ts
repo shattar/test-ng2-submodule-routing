@@ -137,18 +137,29 @@ export class NumericOnlyValidator implements Validator {
                     <button md-button color="primary" [disabled]="jobForm.invalid" type="submit">SUBMIT</button>
                 </md-card-actions>
             </md-card>
-            <md-card *ngIf="form.submitted && !busy">
+            <md-card *ngIf="form.submitted && !busy && lastSubmitError == null">
                 <md-card-subtitle>Job Submission Form</md-card-subtitle>
-                <md-card-title>Site #{{siteId}}</md-card-title>
+                <md-card-title>Submitted</md-card-title>
                 <md-card-content>
+                    <pre>{{lastSubmitResult | json}}</pre>
                 </md-card-content>
                 <md-card-actions align="end">
                     <button md-button type="reset">NEW JOB</button>
+                </md-card-actions>
+            </md-card>
+            <md-card *ngIf="form.submitted && !busy && lastSubmitError != null">
+                <md-card-subtitle>Job Submission Form</md-card-subtitle>
+                <md-card-title>Error</md-card-title>
+                <md-card-content>
+                    <pre>{{lastSubmitError | json}}</pre>
+                </md-card-content>
+                <md-card-actions align="end">
                     <button md-button type="button" (click)="tryAgain()">TRY AGAIN</button>
                 </md-card-actions>
             </md-card>
             <md-card *ngIf="form.submitted && busy">
                 <md-card-subtitle>Job Submission Form</md-card-subtitle>
+                <md-card-title>Please Wait...</md-card-title>
                 <md-card-content>
                     <div class="row-layout-centered">
                         <md-spinner></md-spinner>
@@ -162,16 +173,15 @@ export class JobFormComponent {
     @Input() siteId: number = 1;
 
     private jobForm: FormGroup;
-    private lastSubmitValue: { [key: string]: any };
+
+    private lastFormValue: { [key: string]: any };
+
+    private lastSubmitResult: IJob;
+    private lastSubmitError: any;
+
     private busy: boolean = false;
 
     @ViewChild('form') private formGroupDirective: FormGroupDirective;
-
-    // numericOnly($event: KeyboardEvent) {
-    //     if (['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'].indexOf($event.key) === -1) {
-    //         $event.preventDefault();
-    //     }
-    // }
 
     constructor(
         private formBuilder: FormBuilder,
@@ -186,29 +196,60 @@ export class JobFormComponent {
             materialCode: '',
             targetWeight: ''
         });
-
-        // this.jobForm.controls['truckCode'].setValue('WHAT?');
-        // console.log(this.jobForm.controls['truckCode']);
-
-        this.jobForm.valueChanges.subscribe((data) => {
-            // console.log(data);
-        })
     }
 
     ngOnDestroy() {
     }
 
     tryAgain() {
-        this.formGroupDirective.resetForm(this.lastSubmitValue);
-        this.lastSubmitValue = null;
+        this.formGroupDirective.resetForm(this.lastFormValue);
     }
 
     submitForm() {
         // Grab the value
-        this.lastSubmitValue = this.jobForm.value;
+        let formValue = this.jobForm.value;
+
+        // Save the value here just in case stuff fails, we can restore the form
+        this.lastFormValue = formValue;
+
+        // Clear the last submit error
+        this.lastSubmitError = null;
+
+        // Clear the last submit result
+        this.lastSubmitResult = null;
+
+        // Mark it busy
         this.busy = true;
-        setTimeout(() => {
-            this.busy = false;
-        }, 2000);
+
+        // Transfer values from form to submit request
+        let jobPost: IJob = {
+            state: 'to-do',
+            type: 'simple-truck',
+            zone_code: formValue.zoneCode,
+            instructions: {
+                truck_code: formValue.truckCode,
+                material_code: formValue.materialCode,
+                target_material_weight: +formValue.targetWeight
+            }
+        };
+
+        // this.busy = false;
+
+        // console.log(JSON.stringify(jobPost));
+
+        this.loaderDispatchService.createJob(jobPost, this.siteId).subscribe(
+            /* next */ (value) => {
+                this.lastSubmitError = null;
+                this.lastSubmitResult = value;
+            },
+            /* error */ (error) => {
+                this.lastSubmitError = error;
+                this.lastSubmitResult = null;
+                this.busy = false;
+            },
+            /* complete */ () => {
+                this.busy = false;
+            }
+        );
     }
 }

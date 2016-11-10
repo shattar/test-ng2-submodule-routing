@@ -63,9 +63,6 @@ export class JobManagerService {
         if (jobId == null) {
             if (this._activeJobId != null) {
                 // Stop the current observable
-                // this._activeJobStream$ = Observable.create(sub => {
-                //     sub.next(null);
-                // });
                 this._activeJobStream$ = Observable.of(null);
                 this._activeJobId = null;
             }
@@ -105,12 +102,12 @@ export class JobManagerService {
                 }
             })
             .map(res => {
-                // console.log('Received Response.', res);
-                return <IJob>res.json();
-            })
-            .catch((err, caught) => {
-                // console.log('Received Error.', err);
-                return Observable.of(null)
+                try {
+                    return <IJob>(res.json());
+                } catch (error) {
+                    // If we got an empty response.
+                    return null;
+                }
             });
     }
 }
