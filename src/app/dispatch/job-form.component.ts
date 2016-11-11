@@ -1,6 +1,7 @@
 import { Directive, Component, Input, ViewChild, forwardRef, ElementRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, NG_VALIDATORS, Validator, AbstractControl, FormGroupDirective } from '@angular/forms'
 import { LoaderDispatchService, IJobs, IJob } from '../services';
+import { Strings } from '../app.service';
 import { Subscription } from 'rxjs/Subscription';
 
 const NUMERIC_ONLY_VALIDATOR: any = {
@@ -83,12 +84,12 @@ export class NumericOnlyValidator implements Validator {
     template: `
         <form #form="ngForm" [formGroup]="jobForm" (ngSubmit)="submitForm()" novalidate>
             <md-card *ngIf="!form.submitted">
-                <md-card-subtitle>Job Submission Form</md-card-subtitle>
+                <md-card-subtitle>{{strings.values.dispatch?.jobSubmission?.cardSubtitle}}</md-card-subtitle>
                 <md-card-title>Site #{{siteId}}</md-card-title>
                 <md-card-content>
                     <div class="col-layout">
                         <div class="row-layout">
-                            <md-input placeholder="Truck Code" formControlName="truckCode" autofocus required
+                            <md-input [placeholder]="strings.values.dispatch?.truckCode" formControlName="truckCode" autofocus required
                                       [dividerColor]="jobForm.controls.truckCode.invalid ? 'warn' : 'primary'">
                                 <md-hint *ngIf="jobForm.controls.truckCode.invalid" align="end">
                                     <template [ngIf]="jobForm.controls.truckCode.errors.required">
@@ -99,7 +100,7 @@ export class NumericOnlyValidator implements Validator {
                         </div>
                         <div class="spacer"><!-- Gives proper separation between inputs (previous hint doesn't run into next label) --></div>
                         <div class="row-layout">
-                            <md-input placeholder="Zone Code" formControlName="zoneCode" required
+                            <md-input [placeholder]="strings.values.dispatch?.zoneCode" formControlName="zoneCode" required
                                       [dividerColor]="jobForm.controls.zoneCode.invalid ? 'warn' : 'primary'">
                                 <md-hint *ngIf="jobForm.controls.zoneCode.invalid" align="end">
                                     <template [ngIf]="jobForm.controls.zoneCode.errors.required">
@@ -110,13 +111,13 @@ export class NumericOnlyValidator implements Validator {
                         </div>
                         <div class="spacer"><!-- Gives proper separation between inputs (previous hint doesn't run into next label) --></div>
                         <div class="row-layout">
-                            <md-input placeholder="Material Code" formControlName="materialCode"
+                            <md-input [placeholder]="strings.values.dispatch?.materialCode" formControlName="materialCode"
                                       [dividerColor]="jobForm.controls.materialCode.invalid ? 'warn' : 'primary'">
                             </md-input>
                         </div>
                         <div class="spacer"><!-- Gives proper separation between inputs (previous hint doesn't run into next label) --></div>
                         <div class="row-layout">
-                            <md-input placeholder="Target Weight" formControlName="targetWeight" required numericOnly
+                            <md-input [placeholder]="strings.values.dispatch?.targetWeight" formControlName="targetWeight" required numericOnly
                                       [dividerColor]="jobForm.controls.targetWeight.invalid ? 'warn' : 'primary'">
                                 <span md-suffix>&nbsp;tonnes</span>
                                 <md-hint *ngIf="jobForm.controls.targetWeight.invalid" align="end">
@@ -130,26 +131,32 @@ export class NumericOnlyValidator implements Validator {
                             </md-input>
                         </div>
                     </div>
-                    <pre>{{jobForm.valueChanges | async | json}}</pre>
+                    <!-- <pre>{{jobForm.valueChanges | async | json}}</pre> -->
                 </md-card-content>
                 <md-card-actions align="end">
-                    <button md-button type="reset">RESET</button>
-                    <button md-button color="primary" [disabled]="jobForm.invalid" type="submit">SUBMIT</button>
+                    <button md-button type="reset">
+                        {{strings.values.dispatch?.jobSubmission?.cardActionReset}}
+                    </button>
+                    <button md-button color="primary" [disabled]="jobForm.invalid" type="submit">
+                        {{strings.values.dispatch?.jobSubmission?.cardActionSubmit}}
+                    </button>
                 </md-card-actions>
             </md-card>
             <md-card *ngIf="form.submitted && !busy && lastSubmitError == null">
-                <md-card-subtitle>Job Submission Form</md-card-subtitle>
-                <md-card-title>Submitted</md-card-title>
+                <md-card-subtitle>{{strings.values.dispatch?.jobSubmission?.cardSubtitle}}</md-card-subtitle>
+                <md-card-title>{{strings.values.dispatch?.success}}</md-card-title>
                 <md-card-content>
                     <pre>{{lastSubmitResult | json}}</pre>
                 </md-card-content>
                 <md-card-actions align="end">
-                    <button md-button type="reset">NEW JOB</button>
+                    <button md-button type="reset">
+                        {{strings.values.dispatch?.jobSubmission?.cardActionNext}}
+                    </button>
                 </md-card-actions>
             </md-card>
             <md-card *ngIf="form.submitted && !busy && lastSubmitError != null">
-                <md-card-subtitle>Job Submission Form</md-card-subtitle>
-                <md-card-title>Error</md-card-title>
+                <md-card-subtitle>{{strings.values.dispatch?.jobSubmission?.cardSubtitle}}</md-card-subtitle>
+                <md-card-title>{{strings.values.dispatch?.error}}</md-card-title>
                 <md-card-content>
                     <pre>{{lastSubmitError | json}}</pre>
                 </md-card-content>
@@ -158,8 +165,8 @@ export class NumericOnlyValidator implements Validator {
                 </md-card-actions>
             </md-card>
             <md-card *ngIf="form.submitted && busy">
-                <md-card-subtitle>Job Submission Form</md-card-subtitle>
-                <md-card-title>Please Wait...</md-card-title>
+                <md-card-subtitle>{{strings.values.dispatch?.jobSubmission?.cardSubtitle}}</md-card-subtitle>
+                <md-card-title>{{strings.values.dispatch?.pleaseWait}}</md-card-title>
                 <md-card-content>
                     <div class="row-layout-centered">
                         <md-spinner></md-spinner>
@@ -185,11 +192,11 @@ export class JobFormComponent {
 
     constructor(
         private formBuilder: FormBuilder,
-        private loaderDispatchService: LoaderDispatchService) {
+        private loaderDispatchService: LoaderDispatchService,
+        private strings: Strings) {
     }
 
     ngOnInit() {
-        console.log('hello `job-form` component');
         this.jobForm = this.formBuilder.group({
             truckCode: '',
             zoneCode: '',
@@ -232,10 +239,6 @@ export class JobFormComponent {
                 target_material_weight: +formValue.targetWeight
             }
         };
-
-        // this.busy = false;
-
-        // console.log(JSON.stringify(jobPost));
 
         this.loaderDispatchService.createJob(jobPost, this.siteId).subscribe(
             /* next */ (value) => {

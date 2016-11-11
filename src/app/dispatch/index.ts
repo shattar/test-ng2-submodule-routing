@@ -6,21 +6,24 @@ import { RouterModule } from '@angular/router';
 import { MdProgressCircleModule, MdCardModule, MdInputModule, MdSidenavModule, MdListModule, MdToolbarModule, MdButtonModule } from '@angular/material';
 import { Angular2DataTableModule } from 'angular2-data-table';
 
-import { DetailComponent } from './detail.component';
-import { DetailContents1Component } from './detail-contents-1.component';
+import { DispatchComponent } from './dispatch.component';
 import { DetailContents2Component } from './detail-contents-2.component';
 import { StationViewComponent } from './station-view.component';
+import { StationCardComponent } from './station-card.component';
 import { JobFormComponent, NumericOnlyValidator } from './job-form.component';
+import { CreateJobViewComponent } from './create-job-view.component';
 
 console.log('`Detail` bundle loaded asynchronously');
 // async components must be named routes for WebpackAsyncRoute
 export const routes = [
-  { path: '', component: DetailComponent, // If pathMatch: 'full' was left here, it would block all child routes.
+  { path: '', pathMatch: 'full', redirectTo: 'site/1' },
+  {
+    path: 'site/:siteId', component: DispatchComponent, // If pathMatch: 'full' was left here, it would block all child routes.
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'det1' },
-      { path: 'det1', component: DetailContents1Component },
+      { path: '', pathMatch: 'full', redirectTo: 'zone/1' },
       { path: 'det2', component: DetailContents2Component },
-      { path: 'zone/:zoneId', component: DetailContents2Component }
+      { path: 'create-job', component: CreateJobViewComponent },
+      { path: 'zone/:zoneId', component: StationViewComponent }
     ]
   }
 ];
@@ -28,12 +31,13 @@ export const routes = [
 @NgModule({
   declarations: [
     // Components / Directives/ Pipes
-    DetailComponent,
-    DetailContents1Component,
+    DispatchComponent,
     DetailContents2Component,
     StationViewComponent,
+    StationCardComponent,
     JobFormComponent,
-    NumericOnlyValidator
+    NumericOnlyValidator,
+    CreateJobViewComponent
   ],
   imports: [
     CommonModule,

@@ -14,17 +14,15 @@ import { ROUTES } from './app.routes';
 // App is our top level component
 import { AppComponent } from './app.component';
 import { APP_RESOLVER_PROVIDERS } from './app.resolver';
-import { AppState, InternalStateType } from './app.service';
-import { HomeComponent } from './home';
-import { AboutComponent } from './about';
+import { AppState, InternalStateType, Strings } from './app.service';
 import { NoContentComponent } from './no-content';
-import { XLarge } from './home/x-large';
 import { JobManagerService, LoaderDispatchService } from './services';
 
 // Application wide providers
 const APP_PROVIDERS = [
   ...APP_RESOLVER_PROVIDERS,
   AppState,
+  Strings,
   JobManagerService,
   LoaderDispatchService
 ];
@@ -42,10 +40,7 @@ type StoreType = {
   bootstrap: [ AppComponent ],
   declarations: [
     AppComponent,
-    AboutComponent,
-    HomeComponent,
-    NoContentComponent,
-    XLarge
+    NoContentComponent
   ],
   imports: [ // import Angular's modules
     BrowserModule,

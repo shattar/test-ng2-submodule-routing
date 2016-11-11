@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import { NeverObservable } from 'rxjs/observable/NeverObservable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subscription } from 'rxjs/Subscription';
 import { Subscriber } from 'rxjs/Subscriber';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/retryWhen';
 import 'rxjs/add/operator/repeatWhen';
 import 'rxjs/add/operator/timeout';
@@ -15,7 +14,6 @@ import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/switch';
 import 'rxjs/add/operator/multicast';
 import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/concat';
 
 import { IJob } from './loader-dispatch.service';

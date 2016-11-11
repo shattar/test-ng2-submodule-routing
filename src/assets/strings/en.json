@@ -1,0 +1,30 @@
+{
+    "languageCode": "en",
+    "values": {
+        "dispatch": {
+            "title": "Loader Dispatch",
+
+            "truckCode": "Truck Code",
+            "zoneCode": "Zone Code",
+            "materialCode": "Material Code",
+            "targetWeight": "Target Weight",
+
+            "pleaseWait": "Please Wait...",
+            "error": "Error",
+            "success": "Success",
+
+            "jobSubmission": {
+                "linkTitle": "Create Job",
+                "cardSubtitle": "Job Submission",
+                "cardActionSubmit": "SUBMIT",
+                "cardActionReset": "RESET",
+                "cardActionNext": "NEXT"
+            },
+
+            "stationCard" : {
+                "linkTitle": "View Station",
+                "cardSubtitle": "Station Jobs"
+            }
+        }
+    }
+}

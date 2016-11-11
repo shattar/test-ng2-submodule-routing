@@ -39,3 +39,33 @@ export class AppState {
     return JSON.parse(JSON.stringify( object ));
   }
 }
+
+interface IStrings {
+  readonly languageCode: string;
+  readonly values: {[key: string]: any}
+}
+
+@Injectable()
+export class Strings {
+
+  private _strings: IStrings = {
+    languageCode: null,
+    values: {
+    }
+  };
+
+  get languageCode(): string {
+    return this._strings.languageCode;
+  }
+
+  get values(): {[key: string]: any} {
+    return this._strings.values;
+  }
+
+  constructor() {
+    System.import('../assets/strings/en.json')
+      .then(json => {
+        this._strings = json;
+      })
+  }
+}

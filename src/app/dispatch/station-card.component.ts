@@ -1,12 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { LoaderDispatchService, IJobs, IJob } from '../services';
+import { Strings } from '../app.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
-    selector: 'station-view',
+    selector: 'station-card',
     template: `
         <md-card>
-            <md-card-subtitle>Station Truck List</md-card-subtitle>
+            <md-card-subtitle>{{strings.values.dispatch?.stationCard?.cardSubtitle}}</md-card-subtitle>
             <md-card-title>Station #{{stationId}}</md-card-title>
             <md-card-content>
                 <datatable 
@@ -34,7 +35,7 @@ import { Subscription } from 'rxjs/Subscription';
         </md-card>
   `
 })
-export class StationViewComponent {
+export class StationCardComponent {
     private _stationId: number;
 
     deltaMinutes(dateString: string): string {
@@ -77,7 +78,9 @@ export class StationViewComponent {
         return this._stationId;
     }
 
-    constructor(public loaderDispatchService: LoaderDispatchService) {
+    constructor(
+        private loaderDispatchService: LoaderDispatchService,
+        private strings: Strings) {
     }
 
     ngOnInit() {

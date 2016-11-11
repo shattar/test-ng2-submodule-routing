@@ -23,7 +23,7 @@ import { Subscription } from 'rxjs/Subscription';
           <pre>{{job$ | async | json}}</pre>
         </md-card-content>
       </md-card>
-      <station-view [stationId]="1"></station-view>
+      <station-card [stationId]="1"></station-card>
   `
 })
 export class DetailContents2Component {
