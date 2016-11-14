@@ -16,16 +16,16 @@ export class AppState {
   get state() {
     return this._state = this._clone(this._state);
   }
+
   // never allow mutation
   set state(value) {
     throw new Error('do not mutate the `.state` directly');
   }
 
 
-  get(prop?: any) {
+  get(prop: any) {
     // use our state getter for the clone
-    const state = this.state;
-    return state.hasOwnProperty(prop) ? state[prop] : state;
+    return this._state.hasOwnProperty(prop) ? this._state[prop] : undefined;
   }
 
   set(prop: string, value: any) {

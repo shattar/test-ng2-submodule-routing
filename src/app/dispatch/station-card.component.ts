@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { LoaderDispatchService, IJobs, IJob } from '../services';
 import { Strings } from '../app.service';
 import { Subscription } from 'rxjs/Subscription';
@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
     selector: 'station-card',
     template: `
         <md-card>
-            <md-card-subtitle>{{strings.values.dispatch?.stationCard?.cardSubtitle}}</md-card-subtitle>
+            <md-card-subtitle>{{strings.values.dispatch?.stationCard?.cardSubtitle}}{{jobStatesSubtitle}}</md-card-subtitle>
             <md-card-title>Station #{{stationId}}</md-card-title>
             <md-card-content>
                 <datatable 
@@ -36,7 +36,14 @@ import { Subscription } from 'rxjs/Subscription';
   `
 })
 export class StationCardComponent {
-    private _stationId: number;
+    @Input() stationId: number;
+    @Input() jobStates: string[];
+
+    get jobStatesSubtitle() {
+        if (this.jobStates != null && this.jobStates.length > 0) {
+            return ': ' + this.jobStates.join(', ');
+        }
+    }
 
     deltaMinutes(dateString: string): string {
         let deltaTms = Date.now() - Date.parse(dateString);
@@ -57,13 +64,32 @@ export class StationCardComponent {
     zoneJobsSubscription: Subscription;
     jobs: IJob[] = [];
 
-    @Input() set stationId(stationId: number) {
-        if (this._stationId !== stationId) {
+    constructor(
+        private loaderDispatchService: LoaderDispatchService,
+        private strings: Strings) {
+    }
+
+    ngOnInit() {
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        let reinitStream: boolean = false;
+
+        if ('jobStates' in changes) {
+            reinitStream = true;
+            console.log(JSON.stringify(this.jobStates));
+        }
+
+        if ('stationId' in changes) {
+            reinitStream = true;
+        }
+
+        if (reinitStream) {
             if (this.zoneJobsSubscription) {
                 this.zoneJobsSubscription.unsubscribe();
             }
-            this._stationId = stationId;
-            this.zoneJobsSubscription = this.loaderDispatchService.streamZoneJobs(stationId)
+
+            this.zoneJobsSubscription = this.loaderDispatchService.streamZoneJobs(this.stationId, this.jobStates)
                 .subscribe((jobs: IJobs) => {
                     if (jobs) {
                         this.jobs = jobs.jobs;
@@ -72,19 +98,6 @@ export class StationCardComponent {
                     }
                 });
         }
-    }
-
-    get stationId(): number {
-        return this._stationId;
-    }
-
-    constructor(
-        private loaderDispatchService: LoaderDispatchService,
-        private strings: Strings) {
-    }
-
-    ngOnInit() {
-        console.log('hello `station-view` component');
     }
 
     ngOnDestroy() {

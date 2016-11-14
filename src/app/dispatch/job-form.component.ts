@@ -177,7 +177,7 @@ export class NumericOnlyValidator implements Validator {
     `
 })
 export class JobFormComponent {
-    @Input() siteId: number = 1;
+    @Input() siteId: number;
 
     private jobForm: FormGroup;
 

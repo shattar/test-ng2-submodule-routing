@@ -7,23 +7,24 @@ import { MdProgressCircleModule, MdCardModule, MdInputModule, MdSidenavModule, M
 import { Angular2DataTableModule } from 'angular2-data-table';
 
 import { DispatchComponent } from './dispatch.component';
-import { DetailContents2Component } from './detail-contents-2.component';
+import { JobDetailsComponent } from './job-details.component';
 import { StationViewComponent } from './station-view.component';
 import { StationCardComponent } from './station-card.component';
 import { JobFormComponent, NumericOnlyValidator } from './job-form.component';
 import { CreateJobViewComponent } from './create-job-view.component';
 
-console.log('`Detail` bundle loaded asynchronously');
 // async components must be named routes for WebpackAsyncRoute
 export const routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'site/1' },
+  { path: '', pathMatch: 'full', redirectTo: 'site' },
+  { path: 'site', pathMatch: 'full', component: DispatchComponent },
   {
     path: 'site/:siteId', component: DispatchComponent, // If pathMatch: 'full' was left here, it would block all child routes.
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'zone/1' },
-      { path: 'det2', component: DetailContents2Component },
+      { path: '', pathMatch: 'full', redirectTo: 'station' },
+      { path: 'job-details', component: JobDetailsComponent },
       { path: 'create-job', component: CreateJobViewComponent },
-      { path: 'zone/:zoneId', component: StationViewComponent }
+      { path: 'station', pathMatch: 'full', component: StationViewComponent },
+      { path: 'station/:stationId', component: StationViewComponent }
     ]
   }
 ];
@@ -32,7 +33,7 @@ export const routes = [
   declarations: [
     // Components / Directives/ Pipes
     DispatchComponent,
-    DetailContents2Component,
+    JobDetailsComponent,
     StationViewComponent,
     StationCardComponent,
     JobFormComponent,

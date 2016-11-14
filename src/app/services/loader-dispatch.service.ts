@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, ResponseContentType } from '@angular/http';
+import { Http, Headers, RequestOptions, RequestOptionsArgs, ResponseContentType, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/retryWhen';
@@ -66,16 +66,23 @@ export class LoaderDispatchService {
     constructor(private _http: Http) {
     }
 
-    streamZoneJobs(zoneId: number): Observable<IJobs> {
-        return this.getZoneJobs(zoneId)
+    streamZoneJobs(zoneId: number, jobStates?: string[]): Observable<IJobs> {
+        let options: RequestOptions = new RequestOptions();
+        if (jobStates != null && jobStates.length > 0) {
+            options.search = new URLSearchParams();
+            options.search.append('job_states', jobStates.join());
+        }
+
+        return this._getZoneJobs(zoneId, options)
             .repeatWhen(completed => {
                 return completed.delay(10000);
             });
     }
 
-    getZoneJobs(zoneId: number, maxRetries?: number): Observable<IJobs> {
+    private _getZoneJobs(zoneId: number, requestOptions?: RequestOptionsArgs, maxRetries?: number): Observable<IJobs> {
         let url: string = this._baseUrl + 'zone/' + zoneId.toFixed(0) + '/jobs';
-        return this._http.get(url)
+
+        return this._http.get(url, requestOptions)
             .timeout(5000, new Error('HTTP GET Timeout: ' + url))
             .retryWhen(error => {
                 // error is an Observable sequence of errors.
@@ -99,6 +106,16 @@ export class LoaderDispatchService {
                     return null;
                 }
             });
+    }
+
+    getZoneJobs(zoneId: number, jobStates?: string[], maxRetries?: number): Observable<IJobs> {
+        let options: RequestOptions = new RequestOptions();
+        if (jobStates != null && jobStates.length > 0) {
+            options.search = new URLSearchParams();
+            options.search.append('job_states', jobStates.join());
+        }
+
+        return this._getZoneJobs(zoneId, options, maxRetries);
     }
 
     createJob(job: IJob, siteId?: number, maxRetries?: number): Observable<IJob> {
